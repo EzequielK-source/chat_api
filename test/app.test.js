@@ -5,6 +5,8 @@ const {
 } = require('src/app')
 const Client = require("socket.io-client")
 
+
+const Message = require('src/message/message')
 describe('Server App test', () => {
     let clientSocket, serverSocket;
     beforeAll((done) => {
@@ -23,10 +25,24 @@ describe('Server App test', () => {
     });
 
     test("send message", done => {
+		/**
+			*Send message and check they
+			*are added to message list and
+			*the body structure of message
+		**/
 		const message = 'a new message'
 		clientSocket.emit('create-message', message);
-		clientSocket.on('new-message', messages=>{
-			expect(messages.includes(message)).toBe(true)
+		clientSocket.on('get-messages', messages=>{
+			let messageBody;
+			console.log(messageBody);
+			messages.forEach((element) => {
+				if(element.message === message){
+					messageBody = element;
+					return ;
+				}
+			});
+			expect(messageBody).not.toBeUndefined();
+			expect(messageBody).toHaveProperty('date');
 			done()
 		})
 	});
