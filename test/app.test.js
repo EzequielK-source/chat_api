@@ -22,9 +22,11 @@ describe('Server App test', () => {
         clientSocket.close();
     });
 
-    test("ping pong test", done => {
-		clientSocket.emit('ping');
-		clientSocket.on('pong', ()=>{
+    test("send message", done => {
+		const message = 'a new message'
+		clientSocket.emit('create-message', message);
+		clientSocket.on('new-message', messages=>{
+			expect(messages.includes(message)).toBe(true)
 			done()
 		})
 	});

@@ -5,11 +5,16 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
+const messages = [
+
+]
 
 io.on("connection", socket =>{
 	console.log('client connected');
-	socket.on('ping', ()=>{
-		socket.emit('pong')
+	socket.on('create-message', message=>{
+		console.log('message created');
+		messages.push(message);
+		socket.emit('new-message', messages)
 	})
 
 })
