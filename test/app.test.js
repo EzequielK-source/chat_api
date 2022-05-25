@@ -31,10 +31,10 @@ describe('Server App test', () => {
 			*the body structure of message
 		**/
 		const message = 'a new message'
-		clientSocket.emit('create-message', message);
+		const chatId  = 'asdasdasdasdsa'
+		clientSocket.emit('create-message', {message, chat:chatId});
 		clientSocket.on('get-messages', messages=>{
 			let messageBody;
-			console.log(messageBody);
 			messages.forEach((element) => {
 				if(element.message === message){
 					messageBody = element;
