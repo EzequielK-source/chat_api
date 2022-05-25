@@ -1,13 +1,31 @@
 const request = require("supertest");
-const app = require('src/app')
+const {
+    httpServer,
+    io
+} = require('src/app')
+const Client = require("socket.io-client")
 
 describe('Server App test', () => {
-	test('basic request', (done) => {
-		request(app)
-			.get('/')
-			.then(response=>{
-				expect(response.statusCode).toBe(200)
-				done()
-			})
+    let clientSocket, serverSocket;
+    beforeAll((done) => {
+        httpServer.listen(() => {
+            const port = httpServer.address().port;
+            clientSocket = new Client(`http://localhost:${port}`);
+            io.on('connection', socket => {
+                serverSocket = socket
+            });
+			clientSocket.on('connect', done);
+        })
+    });
+    afterAll(() => {
+        io.close();
+        clientSocket.close();
+    });
+
+    test("ping pong test", done => {
+		clientSocket.emit('ping');
+		clientSocket.on('pong', ()=>{
+			done()
+		})
 	});
 });
